@@ -71,7 +71,7 @@ function App() {
 
         {!interferenceAnalysis && metrics && (
           <div className="metrics-container">
-            <Section title="Wi-Fi" subtitle={formatWifiSubtitle(metrics.wifi)}>
+            <Section title="Connection to your router" subtitle={formatWifiSubtitle(metrics.wifi)}>
               <MetricRow
                 label="Link Rate"
                 value={formatValue(metrics.wifi.link_rate_mbps)}
@@ -97,7 +97,7 @@ function App() {
               />
             </Section>
 
-            <Section title="Router" subtitle={metrics.router_ip || undefined}>
+            <Section title="Inside your home network" subtitle={metrics.router_ip || undefined}>
               {metrics.router_ping ? (
                 <>
                   <MetricRow
@@ -127,7 +127,7 @@ function App() {
               )}
             </Section>
 
-            <Section title="Internet" subtitle="Connected to 1.1.1.1">
+            <Section title="Connection to the internet" subtitle="Connected to 1.1.1.1">
               {metrics.internet_ping ? (
                 <>
                   <MetricRow
@@ -158,7 +158,7 @@ function App() {
             </Section>
 
             <Section
-              title="DNS"
+              title="Website name lookup"
               subtitle={`Using ${truncateDns(metrics.dns.servers)}`}
             >
               <MetricRow
