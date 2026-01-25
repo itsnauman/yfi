@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
+import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import { useWifiMetrics } from "./hooks/useWifiMetrics";
+import { Section } from "./components/Section";
+import { MetricRow } from "./components/MetricRow";
+import {
+  getSignalStatus,
+  getPingStatus,
+  getJitterStatus,
+  getLossStatus,
+  getSignalExplanation,
+} from "./types/metrics";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const { metrics, history, loading, error } = useWifiMetrics();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -17,46 +25,149 @@ function App() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const formatValue = (value: number | null | undefined, decimals = 0): string => {
+    if (value === null || value === undefined) return "—";
+    return value.toFixed(decimals);
+  };
+
+  const truncateDns = (servers: string[]): string => {
+    if (servers.length === 0) return "Not configured";
+    const first = servers[0];
+    if (first.length > 15) return first.substring(0, 12) + "…";
+    return first;
+  };
 
   return (
     <div className="popover-wrapper">
       <div className="popover-arrow" />
       <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+        <div className="header">
+          <h1>WhyFi</h1>
+          <p className="tagline">Figure out why your Wi-Fi sucks</p>
+        </div>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+        {loading && !metrics && (
+          <div className="loading">Loading network metrics...</div>
+        )}
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+        {error && <div className="error">Error: {error}</div>}
+
+        {metrics && (
+          <div className="metrics-container">
+            <Section
+              title={metrics.wifi.ssid || "Not Connected"}
+              subtitle={metrics.wifi.channel || undefined}
+              statusIndicator={metrics.wifi.connected ? "connected" : "disconnected"}
+            >
+              {metrics.wifi.connected ? (
+                <>
+                  <MetricRow
+                    label="Link Rate"
+                    value={formatValue(metrics.wifi.link_rate_mbps)}
+                    unit=" Mbps"
+                    status="neutral"
+                    history={history.linkRate}
+                  />
+                  <MetricRow
+                    label="Signal"
+                    value={formatValue(metrics.wifi.signal_dbm)}
+                    unit=" dBm"
+                    status={getSignalStatus(metrics.wifi.signal_dbm)}
+                    history={history.signal}
+                    explanation={getSignalExplanation(metrics.wifi.signal_dbm)}
+                    invertSparkline
+                  />
+                  <MetricRow
+                    label="Noise"
+                    value={formatValue(metrics.wifi.noise_dbm)}
+                    unit=" dBm"
+                    status="neutral"
+                    history={history.noise}
+                    invertSparkline
+                  />
+                </>
+              ) : (
+                <div className="disconnected-message">
+                  Wi-Fi is not connected
+                </div>
+              )}
+            </Section>
+
+            <Section title="Router" subtitle={metrics.router_ip || undefined}>
+              {metrics.router_ping ? (
+                <>
+                  <MetricRow
+                    label="Ping"
+                    value={formatValue(metrics.router_ping.latency_ms, 1)}
+                    unit=" ms"
+                    status={getPingStatus(metrics.router_ping.latency_ms)}
+                    history={history.routerPing}
+                  />
+                  <MetricRow
+                    label="Jitter"
+                    value={formatValue(metrics.router_ping.jitter_ms, 1)}
+                    unit=" ms"
+                    status={getJitterStatus(metrics.router_ping.jitter_ms)}
+                    history={history.routerJitter}
+                  />
+                  <MetricRow
+                    label="Loss"
+                    value={formatValue(metrics.router_ping.packet_loss_percent, 1)}
+                    unit="%"
+                    status={getLossStatus(metrics.router_ping.packet_loss_percent)}
+                    history={history.routerLoss}
+                  />
+                </>
+              ) : (
+                <div className="no-data">No router detected</div>
+              )}
+            </Section>
+
+            <Section title="Internet" subtitle="Connected to 1.1.1.1">
+              {metrics.internet_ping ? (
+                <>
+                  <MetricRow
+                    label="Ping"
+                    value={formatValue(metrics.internet_ping.latency_ms, 1)}
+                    unit=" ms"
+                    status={getPingStatus(metrics.internet_ping.latency_ms)}
+                    history={history.internetPing}
+                  />
+                  <MetricRow
+                    label="Jitter"
+                    value={formatValue(metrics.internet_ping.jitter_ms, 1)}
+                    unit=" ms"
+                    status={getJitterStatus(metrics.internet_ping.jitter_ms)}
+                    history={history.internetJitter}
+                  />
+                  <MetricRow
+                    label="Loss"
+                    value={formatValue(metrics.internet_ping.packet_loss_percent, 1)}
+                    unit="%"
+                    status={getLossStatus(metrics.internet_ping.packet_loss_percent)}
+                    history={history.internetLoss}
+                  />
+                </>
+              ) : (
+                <div className="no-data">Cannot reach internet</div>
+              )}
+            </Section>
+
+            <Section
+              title="DNS"
+              subtitle={`Using ${truncateDns(metrics.dns.servers)}`}
+            >
+              <MetricRow
+                label="Lookup"
+                value={formatValue(metrics.dns.lookup_latency_ms, 1)}
+                unit=" ms"
+                status={getPingStatus(metrics.dns.lookup_latency_ms)}
+                history={history.dnsLookup}
+              />
+            </Section>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

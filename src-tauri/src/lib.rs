@@ -1,7 +1,11 @@
+mod commands;
+mod network;
+mod wifi;
+
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     window::Color,
-    Manager, WebviewUrl, WebviewWindowBuilder, Rect,
+    Manager, Rect, WebviewUrl, WebviewWindowBuilder,
 };
 
 const WINDOW_LABEL: &str = "main";
@@ -121,7 +125,7 @@ pub fn run() {
                 .build(app)?;
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![hide_window])
+        .invoke_handler(tauri::generate_handler![hide_window, commands::get_network_metrics])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

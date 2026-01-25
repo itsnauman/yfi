@@ -4109,6 +4109,7 @@ dependencies = [
  "libc",
  "mio",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
  "windows-sys 0.61.2",
 ]
@@ -4702,12 +4703,14 @@ name = "whyfi"
 version = "0.1.0"
 dependencies = [
  "log",
+ "regex",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-log",
  "tauri-plugin-opener",
+ "tokio",
 ]
 
 [[package]]
