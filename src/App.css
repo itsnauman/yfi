@@ -176,6 +176,14 @@ html, body {
   color: var(--color-secondary-label);
 }
 
+.metric-status-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-left: 4px;
+  opacity: 0.8;
+}
+
 .metric-explanation {
   margin-top: 2px;
   font-size: 10px;

@@ -10,6 +10,8 @@ import {
   getPingStatus,
   getJitterStatus,
   getLossStatus,
+  getLinkRateStatus,
+  WifiInfo,
 } from "./types/metrics";
 
 function App() {
@@ -37,6 +39,11 @@ function App() {
     return first;
   };
 
+  const formatWifiSubtitle = (wifi: WifiInfo): string | undefined => {
+    if (!wifi.channel) return undefined;
+    return wifi.channel;
+  };
+
   return (
     <div className="popover-wrapper">
       <div className="popover-arrow" />
@@ -52,12 +59,12 @@ function App() {
 
         {metrics && (
           <div className="metrics-container">
-            <Section title="Wi-Fi">
+            <Section title="Wi-Fi" subtitle={formatWifiSubtitle(metrics.wifi)}>
               <MetricRow
                 label="Link Rate"
                 value={formatValue(metrics.wifi.link_rate_mbps)}
                 unit=" Mbps"
-                status="neutral"
+                status={getLinkRateStatus(metrics.wifi.link_rate_mbps)}
                 history={history.linkRate}
               />
               <MetricRow

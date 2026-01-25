@@ -70,11 +70,9 @@ export function getLossStatus(percent: number | null): MetricStatus {
   return "bad";
 }
 
-export function getSignalExplanation(dbm: number | null): string | null {
-  if (dbm === null) return null;
-  if (dbm > -50) return "Excellent signal strength";
-  if (dbm > -60) return "Good signal strength";
-  if (dbm > -70) return "Fair signal, may experience slowdowns";
-  if (dbm > -80) return "Weak signal, expect connection issues";
-  return "Very weak signal, unreliable connection";
+export function getLinkRateStatus(mbps: number | null): MetricStatus {
+  if (mbps === null) return "neutral";
+  if (mbps >= 200) return "good";
+  if (mbps >= 50) return "warning";
+  return "bad";
 }

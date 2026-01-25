@@ -104,11 +104,15 @@ fn parse_wifi_info(output: &str) -> WifiInfo {
         }
     }
 
-    let channel_re = Regex::new(r"Channel:\s*(\d+)(?:\s*\(([^)]+)\))?").unwrap();
+    let channel_re = Regex::new(r"Channel:\s*(\d+)(?:\s*\((\d+(?:\.\d+)?)\s*GHz,\s*(\d+)\s*MHz\))?").unwrap();
     if let Some(caps) = channel_re.captures(output) {
         let channel_num: i32 = caps[1].parse().unwrap_or(0);
-        let band = if channel_num <= 14 { "2.4 GHz" } else { "5 GHz" };
-        info.channel = Some(format!("{} ({})", channel_num, band));
+        if let (Some(ghz), Some(mhz)) = (caps.get(2), caps.get(3)) {
+            info.channel = Some(format!("ch {}, {} GHz, {} MHz", channel_num, ghz.as_str(), mhz.as_str()));
+        } else {
+            let band = if channel_num <= 14 { "2.4 GHz" } else { "5 GHz" };
+            info.channel = Some(format!("ch {}, {}", channel_num, band));
+        }
     }
 
     let tx_rate_re = Regex::new(r"Transmit Rate:\s*([\d.]+)").unwrap();
@@ -168,6 +172,7 @@ Wi-Fi:
         assert!(info.connected);
         assert_eq!(info.ssid, Some("MyNetwork".to_string()));
         assert_eq!(info.frequency_band, Some("Wi-Fi 6".to_string()));
+        assert_eq!(info.channel, Some("ch 149, 5 GHz, 80 MHz".to_string()));
         assert_eq!(info.signal_dbm, Some(-61));
         assert_eq!(info.noise_dbm, Some(-90));
         assert_eq!(info.link_rate_mbps, Some(576.0));
