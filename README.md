@@ -4,7 +4,7 @@
 
 A tiny macOS menu bar app that tells you what's actually going on with your internet connection. No more wondering if it's your router, your ISP, or just the universe conspiring against your video call.
 
-![WhyFi Screenshot](screenshot.png)
+<img src="screenshot.png" width="300" alt="WhyFi Screenshot">
 
 ## What it does
 
