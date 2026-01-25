@@ -10,7 +10,6 @@ import {
   getPingStatus,
   getJitterStatus,
   getLossStatus,
-  getSignalExplanation,
 } from "./types/metrics";
 
 function App() {
@@ -67,7 +66,6 @@ function App() {
                 unit=" dBm"
                 status={getSignalStatus(metrics.wifi.signal_dbm)}
                 history={history.signal}
-                explanation={getSignalExplanation(metrics.wifi.signal_dbm)}
                 invertSparkline
               />
               <MetricRow
