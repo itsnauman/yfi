@@ -10,13 +10,13 @@
   -webkit-text-size-adjust: 100%;
   letter-spacing: -0.01em;
 
-  --popup-bg: #f5f5f7;
+  --popup-bg: transparent;
   --popup-radius: 10px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --color-label: #1d1d1f;
   --color-secondary-label: rgba(60, 60, 67, 0.6);
-  --color-separator: rgba(60, 60, 67, 0.12);
+  --color-separator: rgba(60, 60, 67, 0.2);
   --color-good: #34c759;
   --color-warning: #ff9500;
   --color-bad: #ff3b30;
@@ -56,36 +56,17 @@ html, body {
 }
 
 .popover-arrow {
-  width: 16px;
-  height: 8px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.popover-arrow::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid var(--popup-bg);
+  display: none;
 }
 
 .container {
-  background: var(--popup-bg);
-  border-radius: var(--popup-radius);
-  border: 0.5px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+  background: transparent;
   flex: 1;
   width: 100%;
   overflow: hidden;
   margin: 0;
   display: flex;
   flex-direction: column;
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  isolation: isolate;
 }
 
 .header {
@@ -213,16 +194,33 @@ html, body {
   color: var(--color-bad);
 }
 
+.spinner-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-separator);
+  border-top-color: var(--color-secondary-label);
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --popup-bg: #2c2c2e;
+    --popup-bg: transparent;
     --color-label: #f5f5f7;
     --color-secondary-label: rgba(235, 235, 245, 0.6);
     --color-separator: rgba(84, 84, 88, 0.6);
-  }
-
-  .container {
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(255, 255, 255, 0.1);
   }
 }

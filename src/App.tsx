@@ -4,6 +4,7 @@ import "./App.css";
 import { useWifiMetrics } from "./hooks/useWifiMetrics";
 import { Section } from "./components/Section";
 import { MetricRow } from "./components/MetricRow";
+import { Spinner } from "./components/Spinner";
 import {
   getSignalStatus,
   getPingStatus,
@@ -46,9 +47,7 @@ function App() {
           <p className="tagline">Figure out why your Wi-Fi sucks</p>
         </div>
 
-        {loading && !metrics && (
-          <div className="loading">Loading network metrics...</div>
-        )}
+        {loading && !metrics && <Spinner />}
 
         {error && <div className="error">Error: {error}</div>}
 

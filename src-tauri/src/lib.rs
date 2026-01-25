@@ -4,7 +4,7 @@ mod wifi;
 
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    window::Color,
+    window::{Effect, EffectState, EffectsBuilder},
     Manager, Rect, WebviewUrl, WebviewWindowBuilder,
 };
 
@@ -78,6 +78,12 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
 
     let (x, y) = calculate_window_position(tray_rect, scale_factor);
 
+    let effects = EffectsBuilder::new()
+        .effect(Effect::HudWindow)
+        .state(EffectState::Active)
+        .radius(10.0)
+        .build();
+
     let window = WebviewWindowBuilder::new(app, WINDOW_LABEL, WebviewUrl::default())
         .title("whyfi")
         .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -85,7 +91,7 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
         .resizable(false)
         .decorations(false)
         .transparent(true)
-        .background_color(Color(0, 0, 0, 0))
+        .effects(effects)
         .always_on_top(true)
         .skip_taskbar(true)
         .visible(true)
