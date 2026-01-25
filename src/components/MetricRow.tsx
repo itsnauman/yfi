@@ -12,10 +12,10 @@ interface MetricRowProps {
 }
 
 const statusColors: Record<MetricStatus, string> = {
-  good: "#22c55e",
-  warning: "#f59e0b",
-  bad: "#ef4444",
-  neutral: "#9ca3af",
+  good: "#34c759",
+  warning: "#ff9500",
+  bad: "#ff3b30",
+  neutral: "#8e8e93",
 };
 
 export function MetricRow({

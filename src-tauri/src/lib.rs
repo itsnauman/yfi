@@ -9,8 +9,8 @@ use tauri::{
 };
 
 const WINDOW_LABEL: &str = "main";
-const WINDOW_WIDTH: f64 = 400.0;
-const WINDOW_HEIGHT: f64 = 508.0;
+const WINDOW_WIDTH: f64 = 320.0;
+const WINDOW_HEIGHT: f64 = 480.0;
 
 #[tauri::command]
 fn hide_window(window: tauri::Window) {
