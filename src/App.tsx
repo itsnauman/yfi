@@ -54,43 +54,31 @@ function App() {
 
         {metrics && (
           <div className="metrics-container">
-            <Section
-              title={metrics.wifi.ssid || "Not Connected"}
-              subtitle={metrics.wifi.channel || undefined}
-              statusIndicator={metrics.wifi.connected ? "connected" : "disconnected"}
-            >
-              {metrics.wifi.connected ? (
-                <>
-                  <MetricRow
-                    label="Link Rate"
-                    value={formatValue(metrics.wifi.link_rate_mbps)}
-                    unit=" Mbps"
-                    status="neutral"
-                    history={history.linkRate}
-                  />
-                  <MetricRow
-                    label="Signal"
-                    value={formatValue(metrics.wifi.signal_dbm)}
-                    unit=" dBm"
-                    status={getSignalStatus(metrics.wifi.signal_dbm)}
-                    history={history.signal}
-                    explanation={getSignalExplanation(metrics.wifi.signal_dbm)}
-                    invertSparkline
-                  />
-                  <MetricRow
-                    label="Noise"
-                    value={formatValue(metrics.wifi.noise_dbm)}
-                    unit=" dBm"
-                    status="neutral"
-                    history={history.noise}
-                    invertSparkline
-                  />
-                </>
-              ) : (
-                <div className="disconnected-message">
-                  Wi-Fi is not connected
-                </div>
-              )}
+            <Section title="Wi-Fi">
+              <MetricRow
+                label="Link Rate"
+                value={formatValue(metrics.wifi.link_rate_mbps)}
+                unit=" Mbps"
+                status="neutral"
+                history={history.linkRate}
+              />
+              <MetricRow
+                label="Signal"
+                value={formatValue(metrics.wifi.signal_dbm)}
+                unit=" dBm"
+                status={getSignalStatus(metrics.wifi.signal_dbm)}
+                history={history.signal}
+                explanation={getSignalExplanation(metrics.wifi.signal_dbm)}
+                invertSparkline
+              />
+              <MetricRow
+                label="Noise"
+                value={formatValue(metrics.wifi.noise_dbm)}
+                unit=" dBm"
+                status="neutral"
+                history={history.noise}
+                invertSparkline
+              />
             </Section>
 
             <Section title="Router" subtitle={metrics.router_ip || undefined}>
