@@ -57,10 +57,6 @@ html, body {
   height: 100%;
 }
 
-.popover-arrow {
-  display: none;
-}
-
 .container {
   background: transparent;
   flex: 1;
@@ -127,24 +123,6 @@ html, body {
   color: var(--color-secondary-label);
 }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.status-connected {
-  background-color: var(--color-good);
-}
-
-.status-disconnected {
-  background-color: var(--color-bad);
-}
-
-.status-warning {
-  background-color: var(--color-warning);
-}
-
 .section-content {
   padding: 0 var(--spacing-md) var(--spacing-sm);
 }
@@ -179,17 +157,6 @@ html, body {
   color: var(--color-secondary-label);
 }
 
-.metric-status-label {
-  font-size: 11px;
-  font-weight: 500;
-  text-transform: uppercase;
-  margin-left: var(--spacing-xs);
-  opacity: 0.8;
-  display: inline-block;
-  width: 38px;
-  text-align: left;
-}
-
 .metric-explanation {
   margin-top: 2px;
   font-size: 12px;
@@ -197,7 +164,7 @@ html, body {
   padding-left: 0;
 }
 
-.loading, .error, .no-data, .disconnected-message {
+.error, .no-data {
   padding: 16px;
   text-align: center;
   color: var(--color-secondary-label);

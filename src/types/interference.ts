@@ -34,7 +34,6 @@ export function getInterferenceLevelStatus(level: string): MetricStatus {
 
 export function getSnrStatus(snrDb: number | null): MetricStatus {
   if (snrDb === null) return "neutral";
-  if (snrDb >= 40) return "good";
   if (snrDb >= 25) return "good";
   if (snrDb >= 15) return "warning";
   return "bad";

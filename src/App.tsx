@@ -69,7 +69,6 @@ function App() {
 
   return (
     <div className="popover-wrapper">
-      <div className="popover-arrow" />
       <main className="container">
         <div className="header">
           <h1>WhyFi</h1>
