@@ -12,6 +12,7 @@
 
   --popup-bg: transparent;
   --popup-radius: 10px;
+  --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
   --color-label: #1d1d1f;
@@ -21,6 +22,7 @@
   --color-warning: #ff9500;
   --color-bad: #ff3b30;
   --color-neutral: #8e8e93;
+  --color-accent: var(--color-accent);
 
   color: var(--color-label);
   background-color: transparent;
@@ -70,7 +72,7 @@ html, body {
 }
 
 .header {
-  padding: 10px;
+  padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 0.5px solid var(--color-separator);
 }
 
@@ -101,7 +103,8 @@ html, body {
 }
 
 .section-header {
-  padding: var(--spacing-sm) var(--spacing-md) 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -180,7 +183,7 @@ html, body {
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
-  margin-left: 4px;
+  margin-left: var(--spacing-xs);
   opacity: 0.8;
   display: inline-block;
   width: 34px;
@@ -228,35 +231,40 @@ html, body {
 }
 
 .interference-button-container {
-  padding: var(--spacing-md);
-  border-top: 0.5px solid var(--color-separator);
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 
 .interference-button {
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--spacing-sm) var(--spacing-md);
   font-size: 12px;
   font-weight: 500;
-  color: #fff;
-  background-color: #007aff;
+  color: var(--color-accent);
+  background-color: rgba(0, 122, 255, 0.1);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
   position: relative;
   overflow: hidden;
 }
 
 .interference-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: rgba(0, 122, 255, 0.18);
+}
+
+.interference-button:active:not(:disabled) {
+  background-color: rgba(0, 122, 255, 0.25);
 }
 
 .interference-button:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .interference-button--scanning {
-  background: linear-gradient(90deg, #007aff 0%, #007aff 100%);
+  color: var(--color-secondary-label);
+  background-color: rgba(142, 142, 147, 0.12);
 }
 
 .interference-button--scanning::before {
@@ -269,7 +277,7 @@ html, body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.3) 50%,
+    rgba(142, 142, 147, 0.15) 50%,
     transparent 100%
   );
   animation: shimmer 1.5s infinite;
@@ -306,7 +314,7 @@ html, body {
 }
 
 .close-button {
-  padding: 4px 10px;
+  padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 11px;
   font-weight: 500;
   color: var(--color-secondary-label);
@@ -336,7 +344,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: var(--spacing-sm) var(--spacing-md);
   border-radius: 6px;
   background-color: rgba(0, 0, 0, 0.05);
 }
@@ -389,14 +397,14 @@ html, body {
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-secondary-label);
-  margin-bottom: 6px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .interference-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
+  padding: var(--spacing-xs) 0;
 }
 
 .interference-label {
@@ -439,7 +447,7 @@ html, body {
 }
 
 .suggestions-list li {
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-xs);
   line-height: 1.4;
 }
 
@@ -450,14 +458,14 @@ html, body {
 .nearby-networks-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
 .nearby-network-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
+  padding: var(--spacing-xs) 0;
 }
 
 .network-ssid {
@@ -476,10 +484,10 @@ html, body {
 }
 
 .show-more-button {
-  margin-top: 6px;
-  padding: 4px 8px;
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
   font-size: 11px;
-  color: #007aff;
+  color: var(--color-accent);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -499,5 +507,23 @@ html, body {
 
   .interference-level {
     background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .interference-button {
+    background-color: rgba(10, 132, 255, 0.18);
+    color: #0a84ff;
+  }
+
+  .interference-button:hover:not(:disabled) {
+    background-color: rgba(10, 132, 255, 0.25);
+  }
+
+  .interference-button:active:not(:disabled) {
+    background-color: rgba(10, 132, 255, 0.32);
+  }
+
+  .interference-button--scanning {
+    color: var(--color-secondary-label);
+    background-color: rgba(142, 142, 147, 0.18);
   }
 }
