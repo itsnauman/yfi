@@ -4,6 +4,7 @@ mod network;
 mod wifi;
 
 use tauri::{
+    include_image,
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     window::{Effect, EffectState, EffectsBuilder},
     Manager, Rect, WebviewUrl, WebviewWindowBuilder,
@@ -116,7 +117,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
+                .icon(include_image!("icons/tray-icon.png"))
                 .icon_as_template(true)
                 .on_tray_icon_event(|tray, event| {
                     if let TrayIconEvent::Click {
