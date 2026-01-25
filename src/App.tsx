@@ -1,12 +1,15 @@
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { attachConsole } from "@tauri-apps/plugin-log";
 import "./App.css";
 import { useWifiMetrics } from "./hooks/useWifiMetrics";
 import { useInterferenceCheck } from "./hooks/useInterferenceCheck";
+import { useSpeedTest } from "./hooks/useSpeedTest";
 import { Section } from "./components/Section";
 import { MetricRow } from "./components/MetricRow";
 import { Spinner } from "./components/Spinner";
 import { InterferencePanel } from "./components/InterferencePanel";
+import { SpeedTestPanel } from "./components/SpeedTestPanel";
 import {
   getSignalStatus,
   getPingStatus,
@@ -24,6 +27,18 @@ function App() {
     checkInterference,
     clearAnalysis,
   } = useInterferenceCheck();
+  const {
+    results: speedTestResults,
+    loading: speedTestLoading,
+    error: speedTestError,
+    status: speedTestStatus,
+    runSpeedTest,
+    clearResults: clearSpeedTest,
+  } = useSpeedTest();
+
+  useEffect(() => {
+    attachConsole();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -69,7 +84,11 @@ function App() {
           <InterferencePanel analysis={interferenceAnalysis} onClose={clearAnalysis} />
         )}
 
-        {!interferenceAnalysis && metrics && (
+        {speedTestResults && (
+          <SpeedTestPanel results={speedTestResults} onClose={clearSpeedTest} />
+        )}
+
+        {!interferenceAnalysis && !speedTestResults && metrics && (
           <div className="metrics-container">
             <Section title="Connection to your router" subtitle={formatWifiSubtitle(metrics.wifi)}>
               <MetricRow
@@ -184,10 +203,23 @@ function App() {
               <button
                 className={`interference-button ${interferenceLoading ? "interference-button--scanning" : ""}`}
                 onClick={checkInterference}
-                disabled={interferenceLoading}
+                disabled={interferenceLoading || speedTestLoading}
               >
                 {interferenceLoading ? "Scanning..." : "Check Interference"}
               </button>
+            </div>
+
+            <div className="speedtest-button-container">
+              <button
+                className={`speedtest-button ${speedTestLoading ? "speedtest-button--running" : ""}`}
+                onClick={runSpeedTest}
+                disabled={speedTestLoading || interferenceLoading}
+              >
+                {speedTestLoading ? (speedTestStatus || "Testing...") : "Speed Test"}
+              </button>
+              {speedTestError && (
+                <div className="speedtest-error">{speedTestError}</div>
+              )}
             </div>
           </div>
         )}
