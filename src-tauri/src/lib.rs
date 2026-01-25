@@ -6,6 +6,7 @@ mod wifi;
 use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicy};
 use tauri::{
     include_image,
+    menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     window::{Effect, EffectState, EffectsBuilder},
     Manager, Rect, WebviewUrl, WebviewWindowBuilder,
@@ -122,9 +123,14 @@ pub fn run() {
                 app_instance.setActivationPolicy_(NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory);
             }
 
+            let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&quit_item])?;
+
             TrayIconBuilder::new()
                 .icon(include_image!("icons/tray-icon.png"))
                 .icon_as_template(true)
+                .menu(&menu)
+                .menu_on_left_click(false)
                 .on_tray_icon_event(|tray, event| {
                     if let TrayIconEvent::Click {
                         button: MouseButton::Left,
@@ -138,6 +144,11 @@ pub fn run() {
                 })
                 .build(app)?;
             Ok(())
+        })
+        .on_menu_event(|app, event| {
+            if event.id() == "quit" {
+                app.exit(0);
+            }
         })
         .invoke_handler(tauri::generate_handler![hide_window, commands::get_network_metrics, commands::check_interference])
         .run(tauri::generate_context!())
