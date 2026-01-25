@@ -58,6 +58,7 @@ log::error!("message");
 - Don't add any comments to code.
 
 ## Your Role
-- Your role is to write code. You do NOT have access to the running app, so you cannot test the code. You MUST rely on me, the user, to test the code.
+- Your role is to write code. You do NOT have access to the running app, so you cannot test the code. Although, you can add logging and inspect the log file.
+Alternatively, you can rely on me to interact with the app.
 - If I report a bug in your code, after you fix it, you should pause and ask me to verify that the bug is fixed.
 - If I send you a URL, you MUST immediately fetch its contents and read it carefully, before you do anything else.
