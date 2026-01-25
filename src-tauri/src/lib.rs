@@ -79,7 +79,7 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
     let (x, y) = calculate_window_position(tray_rect, scale_factor);
 
     let effects = EffectsBuilder::new()
-        .effect(Effect::HudWindow)
+        .effect(Effect::Popover)
         .state(EffectState::Active)
         .radius(10.0)
         .build();
