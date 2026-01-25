@@ -1,14 +1,14 @@
 :root {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "SF Pro Text", sans-serif;
-  font-size: 13px;
-  line-height: 1.4;
+  font-family: "SF Pro Rounded", "SF Pro", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 
   --popup-bg: transparent;
   --popup-radius: 10px;
@@ -78,14 +78,14 @@ html, body {
 
 .header h1 {
   margin: 0;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--color-label);
 }
 
 .header .tagline {
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-secondary-label);
 }
 
@@ -117,13 +117,13 @@ html, body {
 }
 
 .section-title {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-label);
 }
 
 .section-subtitle {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-secondary-label);
 }
 
@@ -162,12 +162,12 @@ html, body {
 
 .metric-label {
   flex: 1;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary-label);
 }
 
 .metric-value {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   min-width: 60px;
@@ -180,19 +180,19 @@ html, body {
 }
 
 .metric-status-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   margin-left: var(--spacing-xs);
   opacity: 0.8;
   display: inline-block;
-  width: 34px;
+  width: 38px;
   text-align: left;
 }
 
 .metric-explanation {
   margin-top: 2px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--color-secondary-label);
   padding-left: 0;
 }
@@ -201,7 +201,7 @@ html, body {
   padding: 16px;
   text-align: center;
   color: var(--color-secondary-label);
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .error {
@@ -237,7 +237,7 @@ html, body {
 .interference-button {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--color-accent);
   background-color: rgba(0, 122, 255, 0.1);
@@ -309,13 +309,13 @@ html, body {
 
 .interference-header h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .close-button {
   padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--color-secondary-label);
   background: transparent;
@@ -362,12 +362,12 @@ html, body {
 }
 
 .interference-level-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary-label);
 }
 
 .interference-level-value {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -393,7 +393,7 @@ html, body {
 }
 
 .interference-section-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-secondary-label);
@@ -408,12 +408,12 @@ html, body {
 }
 
 .interference-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary-label);
 }
 
 .interference-value {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -433,7 +433,7 @@ html, body {
 }
 
 .interference-quality {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   opacity: 0.8;
@@ -442,7 +442,7 @@ html, body {
 .suggestions-list {
   margin: 0;
   padding: 0 0 0 16px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-label);
 }
 
@@ -469,7 +469,7 @@ html, body {
 }
 
 .network-ssid {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-label);
   white-space: nowrap;
   overflow: hidden;
@@ -478,7 +478,7 @@ html, body {
 }
 
 .network-channel {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-secondary-label);
   white-space: nowrap;
 }
@@ -486,7 +486,7 @@ html, body {
 .show-more-button {
   margin-top: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-accent);
   background: transparent;
   border: none;
@@ -498,13 +498,13 @@ html, body {
 }
 
 .speedtest-button-container {
-  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md) 0;
 }
 
 .speedtest-button {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--color-accent);
   background-color: rgba(0, 122, 255, 0.1);
@@ -553,7 +553,7 @@ html, body {
 .speedtest-error {
   margin-top: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-bad);
   background-color: rgba(255, 59, 48, 0.1);
   border-radius: 4px;
@@ -576,7 +576,7 @@ html, body {
 
 .speedtest-header h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -616,13 +616,13 @@ html, body {
 }
 
 .speedtest-result-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--color-secondary-label);
   margin-bottom: 2px;
 }
 
 .speedtest-result-value {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -640,7 +640,7 @@ html, body {
 }
 
 .speedtest-result-unit {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
   margin-left: 2px;
   opacity: 0.8;
@@ -656,7 +656,7 @@ html, body {
 }
 
 .speedtest-section-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-secondary-label);
@@ -671,12 +671,12 @@ html, body {
 }
 
 .speedtest-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--color-secondary-label);
 }
 
 .speedtest-value {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 
