@@ -3,6 +3,7 @@ mod interference;
 mod network;
 mod wifi;
 
+use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicy};
 use tauri::{
     include_image,
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
@@ -116,6 +117,11 @@ pub fn run() {
         .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
+            unsafe {
+                let app_instance = NSApp();
+                app_instance.setActivationPolicy_(NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory);
+            }
+
             TrayIconBuilder::new()
                 .icon(include_image!("icons/tray-icon.png"))
                 .icon_as_template(true)
