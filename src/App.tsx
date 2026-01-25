@@ -78,6 +78,7 @@ function App() {
                 unit=" Mbps"
                 status={getLinkRateStatus(metrics.wifi.link_rate_mbps)}
                 history={history.linkRate}
+                tooltip="How fast data can travel between your device and router. Higher is better."
               />
               <MetricRow
                 label="Signal"
@@ -86,6 +87,7 @@ function App() {
                 status={getSignalStatus(metrics.wifi.signal_dbm)}
                 history={history.signal}
                 invertSparkline
+                tooltip="How strong the Wi-Fi signal is. Closer to 0 is better (e.g. -50 is great, -80 is weak)."
               />
               <MetricRow
                 label="Noise"
@@ -94,6 +96,7 @@ function App() {
                 status="neutral"
                 history={history.noise}
                 invertSparkline
+                tooltip="Background interference on your Wi-Fi channel. Lower (more negative) is better."
               />
             </Section>
 
@@ -106,6 +109,7 @@ function App() {
                     unit=" ms"
                     status={getPingStatus(metrics.router_ping.latency_ms)}
                     history={history.routerPing}
+                    tooltip="How long it takes to send a message to your router and get a reply. Lower is better."
                   />
                   <MetricRow
                     label="Jitter"
@@ -113,6 +117,7 @@ function App() {
                     unit=" ms"
                     status={getJitterStatus(metrics.router_ping.jitter_ms)}
                     history={history.routerJitter}
+                    tooltip="How much the ping time varies. Lower means more stable connection."
                   />
                   <MetricRow
                     label="Loss"
@@ -120,6 +125,7 @@ function App() {
                     unit="%"
                     status={getLossStatus(metrics.router_ping.packet_loss_percent)}
                     history={history.routerLoss}
+                    tooltip="Percentage of messages that never arrive. Should be 0% for a healthy connection."
                   />
                 </>
               ) : (
@@ -136,6 +142,7 @@ function App() {
                     unit=" ms"
                     status={getPingStatus(metrics.internet_ping.latency_ms)}
                     history={history.internetPing}
+                    tooltip="How long it takes to reach the internet and back. Lower is better for gaming and video calls."
                   />
                   <MetricRow
                     label="Jitter"
@@ -143,6 +150,7 @@ function App() {
                     unit=" ms"
                     status={getJitterStatus(metrics.internet_ping.jitter_ms)}
                     history={history.internetJitter}
+                    tooltip="How much the internet ping varies. High jitter can cause choppy video calls."
                   />
                   <MetricRow
                     label="Loss"
@@ -150,6 +158,7 @@ function App() {
                     unit="%"
                     status={getLossStatus(metrics.internet_ping.packet_loss_percent)}
                     history={history.internetLoss}
+                    tooltip="Percentage of data packets lost on the way to the internet. Should be 0%."
                   />
                 </>
               ) : (
@@ -167,6 +176,7 @@ function App() {
                 unit=" ms"
                 status={getPingStatus(metrics.dns.lookup_latency_ms)}
                 history={history.dnsLookup}
+                tooltip="How long it takes to translate a website name (like google.com) into an address. Lower is faster browsing."
               />
             </Section>
 

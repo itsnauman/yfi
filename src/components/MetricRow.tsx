@@ -9,6 +9,7 @@ interface MetricRowProps {
   history: number[];
   explanation?: string | null;
   invertSparkline?: boolean;
+  tooltip?: string;
 }
 
 const statusColors: Record<MetricStatus, string> = {
@@ -33,9 +34,10 @@ export function MetricRow({
   history,
   explanation,
   invertSparkline = false,
+  tooltip,
 }: MetricRowProps) {
   return (
-    <div className="metric-row">
+    <div className="metric-row" title={tooltip}>
       <div className="metric-main">
         <span className="metric-label">{label}</span>
         <span className="metric-value" style={{ color: statusColors[status] }}>

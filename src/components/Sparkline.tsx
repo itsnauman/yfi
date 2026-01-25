@@ -20,7 +20,7 @@ export function Sparkline({
   height = 24,
   invertColors = false,
 }: SparklineProps) {
-  const width = 80;
+  const width = 100;
   const padding = 2;
 
   if (data.length === 0) {
