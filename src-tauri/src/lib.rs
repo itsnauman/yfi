@@ -6,7 +6,7 @@ use tauri::{
 
 const WINDOW_LABEL: &str = "main";
 const WINDOW_WIDTH: f64 = 400.0;
-const WINDOW_HEIGHT: f64 = 500.0;
+const WINDOW_HEIGHT: f64 = 508.0;
 
 #[tauri::command]
 fn hide_window(window: tauri::Window) {
@@ -46,7 +46,7 @@ fn calculate_window_position(tray_rect: &Rect, scale_factor: f64) -> (f64, f64) 
     let tray_center_x = tray_x + (tray_width / 2.0);
     let x = tray_center_x - (window_width_physical / 2.0);
 
-    let padding = 4.0 * scale_factor;
+    let padding = 0.0 * scale_factor;
     let y = tray_bottom + padding;
 
     (x, y)

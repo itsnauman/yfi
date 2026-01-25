@@ -23,7 +23,9 @@ function App() {
   }
 
   return (
-    <main className="container">
+    <div className="popover-wrapper">
+      <div className="popover-arrow" />
+      <main className="container">
       <h1>Welcome to Tauri + React</h1>
 
       <div className="row">
@@ -55,6 +57,7 @@ function App() {
       </form>
       <p>{greetMsg}</p>
     </main>
+    </div>
   );
 }
 
