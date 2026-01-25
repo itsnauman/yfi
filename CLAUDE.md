@@ -33,6 +33,27 @@ pnpm dev
 | `src/App.tsx` | Main React component |
 | `vite.config.ts` | Vite dev server config (port 1420 required by Tauri) |
 
+## Logging
+
+- Logs are located in the directory: `~/Library/Logs/com.naumanahmad.whyfi/`
+- You can add logging and then read the log file to validate your changes.
+
+**TypeScript:**
+```typescript
+import { trace, debug, info, warn, error, attachConsole } from '@tauri-apps/plugin-log';
+
+info('message');
+error('message');
+
+const detach = await attachConsole(); // forwards console.log/warn/error to logger
+```
+
+**Rust:**
+```rust
+log::info!("message");
+log::error!("message");
+```
+
 ## Coding Guidelines
 - Don't add any comments to code.
 
