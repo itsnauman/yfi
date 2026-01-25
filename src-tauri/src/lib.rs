@@ -1,4 +1,5 @@
 mod commands;
+mod interference;
 mod network;
 mod wifi;
 
@@ -131,7 +132,7 @@ pub fn run() {
                 .build(app)?;
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![hide_window, commands::get_network_metrics])
+        .invoke_handler(tauri::generate_handler![hide_window, commands::get_network_metrics, commands::check_interference])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

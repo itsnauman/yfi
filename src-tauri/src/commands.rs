@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use crate::interference::{analyze_interference, InterferenceAnalysis};
 use crate::network::{get_dns_info, get_router_ip, ping_host, DnsInfo, PingResult};
 use crate::wifi::{get_wifi_info, WifiInfo};
 
@@ -49,4 +50,11 @@ pub async fn get_network_metrics() -> Result<NetworkMetrics, String> {
         internet_ping: Some(internet_ping),
         dns,
     })
+}
+
+#[tauri::command]
+pub async fn check_interference() -> Result<InterferenceAnalysis, String> {
+    tokio::task::spawn_blocking(analyze_interference)
+        .await
+        .map_err(|e| e.to_string())
 }
