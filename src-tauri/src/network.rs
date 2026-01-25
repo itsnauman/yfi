@@ -1,6 +1,17 @@
+use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::process::Command;
+
+static ROUTER_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Router:\s*([\d.]+)").unwrap());
+static PACKET_LOSS_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"([\d.]+)% packet loss").unwrap());
+static PING_STATS_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"round-trip min/avg/max/stddev = ([\d.]+)/([\d.]+)/([\d.]+)/([\d.]+)").unwrap()
+});
+static DNS_SERVER_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"nameserver\[\d+\]\s*:\s*([\d.]+)").unwrap());
+static QUERY_TIME_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Query time:\s*(\d+)\s*msec").unwrap());
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PingResult {
@@ -45,10 +56,7 @@ pub fn get_router_ip() -> Option<String> {
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let router_re = Regex::new(r"Router:\s*([\d.]+)").ok()?;
-    router_re
-        .captures(&stdout)
-        .map(|caps| caps[1].to_string())
+    ROUTER_RE.captures(&stdout).map(|caps| caps[1].to_string())
 }
 
 pub fn ping_host(host: &str, count: u32) -> PingResult {
@@ -71,13 +79,11 @@ pub fn ping_host(host: &str, count: u32) -> PingResult {
 fn parse_ping_output(output: &str) -> PingResult {
     let mut result = PingResult::default();
 
-    let loss_re = Regex::new(r"([\d.]+)% packet loss").unwrap();
-    if let Some(caps) = loss_re.captures(output) {
+    if let Some(caps) = PACKET_LOSS_RE.captures(output) {
         result.packet_loss_percent = caps[1].parse().ok();
     }
 
-    let stats_re = Regex::new(r"round-trip min/avg/max/stddev = ([\d.]+)/([\d.]+)/([\d.]+)/([\d.]+)").unwrap();
-    if let Some(caps) = stats_re.captures(output) {
+    if let Some(caps) = PING_STATS_RE.captures(output) {
         result.latency_ms = caps[2].parse().ok();
         result.jitter_ms = caps[4].parse().ok();
     }
@@ -108,9 +114,8 @@ pub fn get_dns_info() -> DnsInfo {
 
 fn parse_dns_servers(output: &str) -> Vec<String> {
     let mut servers = Vec::new();
-    let server_re = Regex::new(r"nameserver\[\d+\]\s*:\s*([\d.]+)").unwrap();
 
-    for caps in server_re.captures_iter(output) {
+    for caps in DNS_SERVER_RE.captures_iter(output) {
         let server = caps[1].to_string();
         if !servers.contains(&server) {
             servers.push(server);
@@ -139,8 +144,7 @@ fn measure_dns_lookup(dns_server: &str) -> Option<f64> {
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let time_re = Regex::new(r"Query time:\s*(\d+)\s*msec").ok()?;
-    time_re
+    QUERY_TIME_RE
         .captures(&stdout)
         .and_then(|caps| caps[1].parse().ok())
 }

@@ -1,6 +1,19 @@
+use once_cell::sync::Lazy;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::process::Command;
+
+static CURRENT_SSID_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Current Wi-Fi Network:\s*(.+)").unwrap());
+static CURRENT_NETWORK_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Current Network Information:\s*\n\s*(.+):").unwrap());
+static PHY_MODE_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"PHY Mode:\s*(.+)").unwrap());
+static CHANNEL_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"Channel:\s*(\d+)(?:\s*\((\d+(?:\.\d+)?)\s*GHz,\s*(\d+)\s*MHz\))?").unwrap()
+});
+static TX_RATE_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Transmit Rate:\s*([\d.]+)").unwrap());
+static SIGNAL_NOISE_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Signal / Noise:\s*(-?\d+)\s*dBm\s*/\s*(-?\d+)\s*dBm").unwrap());
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WifiInfo {
@@ -73,8 +86,8 @@ fn get_current_ssid() -> Option<String> {
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let re = Regex::new(r"Current Wi-Fi Network:\s*(.+)").ok()?;
-    re.captures(&stdout)
+    CURRENT_SSID_RE
+        .captures(&stdout)
         .map(|caps| caps[1].trim().to_string())
         .filter(|s| !s.is_empty() && s != "You are not associated with an AirPort network.")
 }
@@ -82,16 +95,14 @@ fn get_current_ssid() -> Option<String> {
 fn parse_wifi_info(output: &str) -> WifiInfo {
     let mut info = WifiInfo::default();
 
-    let current_network_re = Regex::new(r"Current Network Information:\s*\n\s*(.+):").unwrap();
-    if let Some(caps) = current_network_re.captures(output) {
+    if let Some(caps) = CURRENT_NETWORK_RE.captures(output) {
         info.connected = true;
         info.ssid = Some(caps[1].trim().to_string());
     } else {
         return info;
     }
 
-    let phy_mode_re = Regex::new(r"PHY Mode:\s*(.+)").unwrap();
-    if let Some(caps) = phy_mode_re.captures(output) {
+    if let Some(caps) = PHY_MODE_RE.captures(output) {
         let phy_mode = caps[1].trim();
         if phy_mode.contains("802.11ax") || phy_mode.contains("Wi-Fi 6") {
             info.frequency_band = Some("Wi-Fi 6".to_string());
@@ -104,24 +115,26 @@ fn parse_wifi_info(output: &str) -> WifiInfo {
         }
     }
 
-    let channel_re = Regex::new(r"Channel:\s*(\d+)(?:\s*\((\d+(?:\.\d+)?)\s*GHz,\s*(\d+)\s*MHz\))?").unwrap();
-    if let Some(caps) = channel_re.captures(output) {
+    if let Some(caps) = CHANNEL_RE.captures(output) {
         let channel_num: i32 = caps[1].parse().unwrap_or(0);
         if let (Some(ghz), Some(mhz)) = (caps.get(2), caps.get(3)) {
-            info.channel = Some(format!("ch {}, {} GHz, {} MHz", channel_num, ghz.as_str(), mhz.as_str()));
+            info.channel = Some(format!(
+                "ch {}, {} GHz, {} MHz",
+                channel_num,
+                ghz.as_str(),
+                mhz.as_str()
+            ));
         } else {
             let band = if channel_num <= 14 { "2.4 GHz" } else { "5 GHz" };
             info.channel = Some(format!("ch {}, {}", channel_num, band));
         }
     }
 
-    let tx_rate_re = Regex::new(r"Transmit Rate:\s*([\d.]+)").unwrap();
-    if let Some(caps) = tx_rate_re.captures(output) {
+    if let Some(caps) = TX_RATE_RE.captures(output) {
         info.link_rate_mbps = caps[1].parse().ok();
     }
 
-    let signal_re = Regex::new(r"Signal / Noise:\s*(-?\d+)\s*dBm\s*/\s*(-?\d+)\s*dBm").unwrap();
-    if let Some(caps) = signal_re.captures(output) {
+    if let Some(caps) = SIGNAL_NOISE_RE.captures(output) {
         info.signal_dbm = caps[1].parse().ok();
         info.noise_dbm = caps[2].parse().ok();
     }

@@ -1,9 +1,3 @@
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  YAxis,
-} from "recharts";
 import { MetricStatus } from "../types/metrics";
 
 interface SparklineProps {
@@ -26,11 +20,13 @@ export function Sparkline({
   height = 24,
   invertColors = false,
 }: SparklineProps) {
+  const width = 80;
+  const padding = 2;
+
   if (data.length === 0) {
-    return <div style={{ width: 80, height }} />;
+    return <div style={{ width, height }} />;
   }
 
-  const chartData = data.map((value, index) => ({ index, value }));
   const color = invertColors
     ? status === "good"
       ? statusColors.bad
@@ -39,21 +35,35 @@ export function Sparkline({
         : statusColors[status]
     : statusColors[status];
 
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const innerWidth = width - padding * 2;
+  const innerHeight = height - padding * 2;
+
+  const points = data
+    .map((value, index) => {
+      const x = padding + (index / (data.length - 1 || 1)) * innerWidth;
+      const y = padding + innerHeight - ((value - min) / range) * innerHeight;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+
   return (
-    <div style={{ width: 80, height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
-          <YAxis domain={["dataMin", "dataMax"]} hide />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke={color}
-            strokeWidth={1.5}
-            dot={false}
-            isAnimationActive={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      style={{ display: "block" }}
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
