@@ -1,5 +1,6 @@
 use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    window::Color,
     Manager, WebviewUrl, WebviewWindowBuilder, Rect,
 };
 
@@ -79,6 +80,8 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
         .position(x / scale_factor, y / scale_factor)
         .resizable(false)
         .decorations(false)
+        .transparent(true)
+        .background_color(Color(0, 0, 0, 0))
         .always_on_top(true)
         .skip_taskbar(true)
         .visible(true)

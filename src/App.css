@@ -12,13 +12,27 @@
   font-weight: 400;
 
   color: #0f0f0f;
-  background-color: #f6f6f6;
+  background-color: transparent;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#root {
+  background-color: #f6f6f6;
+  border-radius: 12px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .container {
@@ -98,6 +112,9 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
+  }
+
+  #root {
     background-color: #2f2f2f;
   }
 
