@@ -10,7 +10,7 @@
   -webkit-text-size-adjust: 100%;
   letter-spacing: -0.01em;
 
-  --vibrancy-bg: rgba(246, 246, 246, 0.72);
+  --popup-bg: #f5f5f7;
   --popup-radius: 10px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
@@ -31,6 +31,15 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
 }
 
 #root {
@@ -61,23 +70,22 @@ html, body {
   transform: translateX(-50%);
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-bottom: 8px solid var(--vibrancy-bg);
+  border-bottom: 8px solid var(--popup-bg);
 }
 
 .container {
-  background: var(--vibrancy-bg);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: var(--popup-bg);
   border-radius: var(--popup-radius);
   border: 0.5px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 0.5px rgba(0, 0, 0, 0.1);
   flex: 1;
   width: 100%;
   overflow: hidden;
-  overflow-y: auto;
   margin: 0;
   display: flex;
   flex-direction: column;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  isolation: isolate;
 }
 
 .header {
@@ -100,7 +108,7 @@ html, body {
 
 .metrics-container {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .section {
@@ -207,7 +215,7 @@ html, body {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --vibrancy-bg: rgba(40, 40, 40, 0.72);
+    --popup-bg: #2c2c2e;
     --color-label: #f5f5f7;
     --color-secondary-label: rgba(235, 235, 245, 0.6);
     --color-separator: rgba(84, 84, 88, 0.6);
