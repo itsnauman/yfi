@@ -190,7 +190,7 @@ function App() {
               subtitle={`Using ${truncateDns(metrics.dns.servers)}`}
             >
               <MetricRow
-                label="Lookup"
+                label="DNS Lookup"
                 value={formatValue(metrics.dns.lookup_latency_ms, 1)}
                 unit=" ms"
                 status={getPingStatus(metrics.dns.lookup_latency_ms)}
