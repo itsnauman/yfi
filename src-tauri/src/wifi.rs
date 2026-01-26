@@ -42,6 +42,7 @@ impl Default for WifiInfo {
 
 pub fn get_wifi_info() -> WifiInfo {
     let ssid = get_current_ssid();
+    log::debug!("get_wifi_info: current SSID: {:?}", ssid);
 
     let output = Command::new("system_profiler")
         .args(["SPAirPortDataType"])
@@ -50,7 +51,7 @@ pub fn get_wifi_info() -> WifiInfo {
     let output = match output {
         Ok(o) => o,
         Err(e) => {
-            log::error!("Failed to run system_profiler: {}", e);
+            log::error!("get_wifi_info: failed to run system_profiler: {}", e);
             return WifiInfo {
                 connected: ssid.is_some(),
                 ssid,
@@ -60,7 +61,7 @@ pub fn get_wifi_info() -> WifiInfo {
     };
 
     if !output.status.success() {
-        log::error!("system_profiler failed with status: {}", output.status);
+        log::error!("get_wifi_info: system_profiler failed with status: {}", output.status);
         return WifiInfo {
             connected: ssid.is_some(),
             ssid,
@@ -72,6 +73,15 @@ pub fn get_wifi_info() -> WifiInfo {
     let mut info = parse_wifi_info(&stdout);
     info.ssid = ssid;
     info.connected = info.ssid.is_some();
+
+    log::debug!(
+        "get_wifi_info: signal: {:?}dBm, noise: {:?}dBm, channel: {:?}, rate: {:?}Mbps",
+        info.signal_dbm,
+        info.noise_dbm,
+        info.channel,
+        info.link_rate_mbps
+    );
+
     info
 }
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { attachConsole } from "@tauri-apps/plugin-log";
+import { attachConsole, info, debug } from "@tauri-apps/plugin-log";
 import "./App.css";
 import { useWifiMetrics } from "./hooks/useWifiMetrics";
 import { useInterferenceCheck } from "./hooks/useInterferenceCheck";
@@ -37,12 +37,15 @@ function App() {
   } = useSpeedTest();
 
   useEffect(() => {
-    attachConsole();
+    attachConsole().then(() => {
+      info("Frontend app mounted");
+    });
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        debug("Escape key pressed, hiding window");
         invoke("hide_window");
       }
     };

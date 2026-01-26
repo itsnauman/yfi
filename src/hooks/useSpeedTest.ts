@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import SpeedTest from "@cloudflare/speedtest";
+import { debug, info, error as logError } from "@tauri-apps/plugin-log";
 import { SpeedTestResults } from "../types/speedtest";
 
 interface UseSpeedTestResult {
@@ -23,6 +24,7 @@ export function useSpeedTest(): UseSpeedTestResult {
     setError(null);
     setResults(null);
     setStatus("Initializing...");
+    info("useSpeedTest: starting speed test");
 
     try {
       const speedTest = new SpeedTest({
@@ -41,10 +43,13 @@ export function useSpeedTest(): UseSpeedTestResult {
 
       speedTest.onResultsChange = ({ type }) => {
         if (type === "latency") {
+          debug("useSpeedTest: testing latency");
           setStatus("Testing latency...");
         } else if (type === "download") {
+          debug("useSpeedTest: testing download");
           setStatus("Testing download...");
         } else if (type === "upload") {
+          debug("useSpeedTest: testing upload");
           setStatus("Testing upload...");
         }
       };
@@ -53,14 +58,17 @@ export function useSpeedTest(): UseSpeedTestResult {
         setStatus("Processing results...");
         try {
           const summary = results.getSummary();
-          setResults({
+          const finalResults = {
             downloadBandwidth: (summary.download ?? 0) / 1_000_000,
             uploadBandwidth: (summary.upload ?? 0) / 1_000_000,
             latency: summary.latency ?? 0,
             jitter: summary.jitter ?? 0,
-          });
+          };
+          setResults(finalResults);
+          info(`useSpeedTest: complete - download: ${finalResults.downloadBandwidth.toFixed(1)}Mbps, upload: ${finalResults.uploadBandwidth.toFixed(1)}Mbps, latency: ${finalResults.latency.toFixed(1)}ms`);
           setStatus("");
         } catch (e) {
+          logError(`useSpeedTest: error processing results - ${e}`);
           setError(`Error processing results: ${e}`);
           setStatus("");
         }
@@ -69,7 +77,9 @@ export function useSpeedTest(): UseSpeedTestResult {
       };
 
       speedTest.onError = (err: unknown) => {
-        setError(err instanceof Error ? err.message : String(err));
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        logError(`useSpeedTest: error - ${errorMsg}`);
+        setError(errorMsg);
         setStatus("");
         setLoading(false);
         speedTestRef.current = null;
@@ -78,7 +88,9 @@ export function useSpeedTest(): UseSpeedTestResult {
       speedTest.play();
       setStatus("Starting test...");
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      const errorMsg = e instanceof Error ? e.message : String(e);
+      logError(`useSpeedTest: initialization error - ${errorMsg}`);
+      setError(errorMsg);
       setStatus("");
       setLoading(false);
     }

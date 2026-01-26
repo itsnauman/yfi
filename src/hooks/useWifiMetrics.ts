@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { debug, error as logError } from "@tauri-apps/plugin-log";
 import { NetworkMetrics, MetricHistory } from "../types/metrics";
 import { RingBuffer } from "../utils/RingBuffer";
 
@@ -57,6 +58,7 @@ export function useWifiMetrics() {
 
   const fetchMetrics = useCallback(async () => {
     try {
+      debug("useWifiMetrics: fetching network metrics");
       const result = await invoke<NetworkMetrics>("get_network_metrics");
       if (!isMounted.current) return;
 
@@ -91,9 +93,13 @@ export function useWifiMetrics() {
         internetLoss: buffers.internetLoss.toArray(),
         dnsLookup: buffers.dnsLookup.toArray(),
       });
+
+      debug(`useWifiMetrics: metrics received - signal: ${result.wifi.signal_dbm}dBm, internet ping: ${result.internet_ping?.latency_ms}ms`);
     } catch (e) {
       if (!isMounted.current) return;
-      setError(e instanceof Error ? e.message : String(e));
+      const errorMsg = e instanceof Error ? e.message : String(e);
+      logError(`useWifiMetrics: fetch failed - ${errorMsg}`);
+      setError(errorMsg);
     } finally {
       if (isMounted.current) {
         setLoading(false);

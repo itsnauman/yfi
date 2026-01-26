@@ -11,6 +11,7 @@ use tauri::{
     window::{Effect, EffectState, EffectsBuilder},
     Manager, Rect, WebviewUrl, WebviewWindowBuilder,
 };
+use tauri_plugin_log::{Target, TargetKind};
 
 const WINDOW_LABEL: &str = "main";
 const WINDOW_WIDTH: f64 = 360.0;
@@ -18,17 +19,21 @@ const WINDOW_HEIGHT: f64 = 620.0;
 
 #[tauri::command]
 fn hide_window(window: tauri::Window) {
+    log::debug!("hide_window command invoked");
     let _ = window.hide();
 }
 
 fn toggle_window(app: &tauri::AppHandle, tray_rect: Rect) {
     if let Some(window) = app.get_webview_window(WINDOW_LABEL) {
         if window.is_visible().unwrap_or(false) {
+            log::debug!("Hiding existing window");
             let _ = window.hide();
         } else {
+            log::debug!("Showing existing window");
             position_and_show_window(&window, &tray_rect);
         }
     } else {
+        log::debug!("Creating new popup window");
         create_popup_window(app, &tray_rect);
     }
 }
@@ -115,13 +120,31 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_log::Builder::new().build())
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir { file_name: None }),
+                    Target::new(TargetKind::Webview),
+                ])
+                .level(log::LevelFilter::Info)
+                .level_for("tao", log::LevelFilter::Warn)
+                .level_for("wry", log::LevelFilter::Warn)
+                .level_for("tracing", log::LevelFilter::Warn)
+                .level_for("tokio", log::LevelFilter::Warn)
+                .level_for("hyper", log::LevelFilter::Warn)
+                .level_for("whyfi_lib", log::LevelFilter::Debug)
+                .build(),
+        )
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
+            log::info!("WhyFi app starting up");
+
             unsafe {
                 let app_instance = NSApp();
                 app_instance.setActivationPolicy_(NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory);
             }
+            log::debug!("Set activation policy to accessory");
 
             let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&quit_item])?;
@@ -139,10 +162,13 @@ pub fn run() {
                         ..
                     } = event
                     {
+                        log::debug!("Tray icon left-clicked");
                         toggle_window(tray.app_handle(), rect);
                     }
                 })
                 .build(app)?;
+
+            log::info!("WhyFi app setup complete");
             Ok(())
         })
         .on_menu_event(|app, event| {

@@ -35,6 +35,7 @@ pub struct InterferenceAnalysis {
 }
 
 pub fn analyze_interference() -> InterferenceAnalysis {
+    log::debug!("analyze_interference: starting");
     let wifi = get_wifi_info();
 
     let snr_db = match (wifi.signal_dbm, wifi.noise_dbm) {
@@ -42,8 +43,14 @@ pub fn analyze_interference() -> InterferenceAnalysis {
         _ => None,
     };
     let snr_quality = classify_snr(snr_db);
+    log::debug!("analyze_interference: SNR: {:?}dB ({})", snr_db, snr_quality);
 
     let (current_channel, current_frequency_ghz) = parse_channel_info(&wifi.channel);
+    log::debug!(
+        "analyze_interference: current channel: {:?}, frequency: {:?}GHz",
+        current_channel,
+        current_frequency_ghz
+    );
 
     let nearby_networks = scan_nearby_networks();
 
@@ -51,6 +58,11 @@ pub fn analyze_interference() -> InterferenceAnalysis {
         current_channel,
         current_frequency_ghz,
         &nearby_networks,
+    );
+    log::debug!(
+        "analyze_interference: same channel: {}, overlapping: {}",
+        same_channel_count,
+        overlapping_count
     );
 
     let interference_level = classify_interference(
@@ -67,6 +79,12 @@ pub fn analyze_interference() -> InterferenceAnalysis {
         same_channel_count,
         overlapping_count,
         &nearby_networks,
+    );
+
+    log::debug!(
+        "analyze_interference: complete - level: {}, suggestions: {}",
+        interference_level,
+        suggestions.len()
     );
 
     InterferenceAnalysis {
@@ -140,18 +158,20 @@ fn scan_nearby_networks() -> Vec<NearbyNetwork> {
     let output = match output {
         Ok(o) => o,
         Err(e) => {
-            log::error!("Failed to run system_profiler for nearby networks: {}", e);
+            log::error!("scan_nearby_networks: failed to run system_profiler: {}", e);
             return Vec::new();
         }
     };
 
     if !output.status.success() {
-        log::error!("system_profiler failed");
+        log::error!("scan_nearby_networks: system_profiler failed");
         return Vec::new();
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    parse_nearby_networks(&stdout)
+    let networks = parse_nearby_networks(&stdout);
+    log::debug!("scan_nearby_networks: found {} nearby networks", networks.len());
+    networks
 }
 
 fn parse_nearby_networks(output: &str) -> Vec<NearbyNetwork> {

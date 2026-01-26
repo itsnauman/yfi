@@ -52,11 +52,14 @@ pub fn get_router_ip() -> Option<String> {
         .ok()?;
 
     if !output.status.success() {
+        log::debug!("get_router_ip: networksetup command failed");
         return None;
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    ROUTER_RE.captures(&stdout).map(|caps| caps[1].to_string())
+    let router_ip = ROUTER_RE.captures(&stdout).map(|caps| caps[1].to_string());
+    log::debug!("get_router_ip: found router at {:?}", router_ip);
+    router_ip
 }
 
 pub fn ping_host(host: &str, count: u32) -> PingResult {
@@ -67,13 +70,21 @@ pub fn ping_host(host: &str, count: u32) -> PingResult {
     let output = match output {
         Ok(o) => o,
         Err(e) => {
-            log::error!("Failed to run ping: {}", e);
+            log::error!("ping_host: failed to run ping to {}: {}", host, e);
             return PingResult::default();
         }
     };
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    parse_ping_output(&stdout)
+    let result = parse_ping_output(&stdout);
+    log::debug!(
+        "ping_host: {} - latency: {:?}ms, jitter: {:?}ms, loss: {:?}%",
+        host,
+        result.latency_ms,
+        result.jitter_ms,
+        result.packet_loss_percent
+    );
+    result
 }
 
 fn parse_ping_output(output: &str) -> PingResult {
@@ -102,11 +113,22 @@ pub fn get_dns_info() -> DnsInfo {
         if output.status.success() {
             let stdout = String::from_utf8_lossy(&output.stdout);
             info.servers = parse_dns_servers(&stdout);
+        } else {
+            log::debug!("get_dns_info: scutil command failed");
         }
+    } else {
+        log::debug!("get_dns_info: failed to run scutil");
     }
 
     if !info.servers.is_empty() {
         info.lookup_latency_ms = measure_dns_lookup(&info.servers[0]);
+        log::debug!(
+            "get_dns_info: servers: {:?}, lookup latency: {:?}ms",
+            info.servers,
+            info.lookup_latency_ms
+        );
+    } else {
+        log::debug!("get_dns_info: no DNS servers found");
     }
 
     info
