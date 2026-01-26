@@ -137,7 +137,7 @@ export function useAIDiagnosis(): UseAIDiagnosisResult {
       });
 
       const prompt = buildPrompt(input);
-      debug(`useAIDiagnosis: sending prompt to OpenAI`);
+      info(`useAIDiagnosis: prompt:\n${prompt}`);
 
       const { text } = await generateText({
         model: openai("gpt-4o-mini"),
