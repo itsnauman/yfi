@@ -22,48 +22,52 @@ interface UseAIDiagnosisResult {
   clearResult: () => void;
 }
 
+function formatTimeSeries(data: number[], unit: string): string {
+  if (data.length === 0) return "No data";
+  const last10 = data.slice(-10);
+  return `[${last10.join(", ")}] ${unit}`;
+}
+
 function buildPrompt(input: DiagnosisInput): string {
   const { metrics, history, interferenceAnalysis, speedTestResults } = input;
 
   let prompt = `You are a Wi-Fi network diagnostic expert. Analyze the following network metrics and provide actionable recommendations to improve the user's Wi-Fi experience.
 
-## Current Network Metrics
+The data below includes time series measurements (oldest to newest) to help you identify trends and patterns.
+
+## Network Configuration
 `;
 
   if (metrics) {
-    prompt += `
-### Wi-Fi Connection
-- Frequency Band: ${metrics.wifi.frequency_band || "Unknown"}
+    prompt += `- Frequency Band: ${metrics.wifi.frequency_band || "Unknown"}
 - Channel: ${metrics.wifi.channel || "Unknown"}
-- Link Rate: ${metrics.wifi.link_rate_mbps !== null ? `${metrics.wifi.link_rate_mbps} Mbps` : "Unknown"}
-- Signal Strength: ${metrics.wifi.signal_dbm !== null ? `${metrics.wifi.signal_dbm} dBm` : "Unknown"}
-- Noise Level: ${metrics.wifi.noise_dbm !== null ? `${metrics.wifi.noise_dbm} dBm` : "Unknown"}
+- DNS Servers: ${metrics.dns.servers.length > 0 ? metrics.dns.servers.join(", ") : "None configured"}
+`;
+  }
+
+  const sampleCount = Math.min(history.signal.length, 10);
+
+  prompt += `
+## Time Series Metrics (${sampleCount} samples, oldest to newest)
+
+### Wi-Fi Signal Quality
+- Signal Strength (dBm): ${formatTimeSeries(history.signal, "dBm")}
+- Noise Level (dBm): ${formatTimeSeries(history.noise, "dBm")}
+- Link Rate (Mbps): ${formatTimeSeries(history.linkRate, "Mbps")}
 
 ### Router Connection
-- Router IP: ${metrics.router_ip || "Unknown"}
-- Router Ping: ${metrics.router_ping?.latency_ms !== null ? `${metrics.router_ping?.latency_ms} ms` : "Unknown"}
-- Router Jitter: ${metrics.router_ping?.jitter_ms !== null ? `${metrics.router_ping?.jitter_ms} ms` : "Unknown"}
-- Router Packet Loss: ${metrics.router_ping?.packet_loss_percent !== null ? `${metrics.router_ping?.packet_loss_percent}%` : "Unknown"}
+- Latency (ms): ${formatTimeSeries(history.routerPing, "ms")}
+- Jitter (ms): ${formatTimeSeries(history.routerJitter, "ms")}
+- Packet Loss (%): ${formatTimeSeries(history.routerLoss, "%")}
 
 ### Internet Connection (to 1.1.1.1)
-- Internet Ping: ${metrics.internet_ping?.latency_ms !== null ? `${metrics.internet_ping?.latency_ms} ms` : "Unknown"}
-- Internet Jitter: ${metrics.internet_ping?.jitter_ms !== null ? `${metrics.internet_ping?.jitter_ms} ms` : "Unknown"}
-- Internet Packet Loss: ${metrics.internet_ping?.packet_loss_percent !== null ? `${metrics.internet_ping?.packet_loss_percent}%` : "Unknown"}
+- Latency (ms): ${formatTimeSeries(history.internetPing, "ms")}
+- Jitter (ms): ${formatTimeSeries(history.internetJitter, "ms")}
+- Packet Loss (%): ${formatTimeSeries(history.internetLoss, "%")}
 
 ### DNS
-- DNS Servers: ${metrics.dns.servers.length > 0 ? metrics.dns.servers.join(", ") : "None configured"}
-- DNS Lookup Latency: ${metrics.dns.lookup_latency_ms !== null ? `${metrics.dns.lookup_latency_ms} ms` : "Unknown"}
+- Lookup Latency (ms): ${formatTimeSeries(history.dnsLookup, "ms")}
 `;
-  }
-
-  if (history.signal.length > 0) {
-    prompt += `
-### Historical Trends (last ${history.signal.length} samples)
-- Signal Strength Range: ${Math.min(...history.signal)} to ${Math.max(...history.signal)} dBm (as absolute values)
-- Internet Ping Range: ${Math.min(...history.internetPing.filter(v => v > 0))} to ${Math.max(...history.internetPing)} ms
-- Link Rate Range: ${Math.min(...history.linkRate.filter(v => v > 0))} to ${Math.max(...history.linkRate)} Mbps
-`;
-  }
 
   if (interferenceAnalysis) {
     prompt += `
@@ -106,11 +110,13 @@ Analyze the above data and respond with a JSON object in this exact format:
 }
 
 Guidelines:
+- Analyze the time series data for trends: improving, degrading, stable, or intermittent patterns
+- Look for correlations between metrics (e.g., signal drops coinciding with latency spikes)
 - Be concise but specific
 - Focus on actionable recommendations the user can actually implement
-- Consider signal strength (-30 to -50 dBm is excellent, -50 to -60 is good, -60 to -70 is fair, below -70 is weak)
-- Consider ping latency (under 20ms is excellent, 20-50ms is good, 50-100ms is acceptable, over 100ms is problematic)
-- Consider packet loss (any packet loss above 0% is concerning)
+- Signal strength: -30 to -50 dBm is excellent, -50 to -60 is good, -60 to -70 is fair, below -70 is weak
+- Ping latency: under 20ms is excellent, 20-50ms is good, 50-100ms is acceptable, over 100ms is problematic
+- Any packet loss above 0% is concerning
 - If interference analysis is available, consider channel congestion
 - Respond ONLY with the JSON object, no additional text
 `;
