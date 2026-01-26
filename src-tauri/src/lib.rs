@@ -2,7 +2,7 @@ mod commands;
 mod interference;
 mod network;
 mod wifi;
-
+#[allow(deprecated)]
 use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicy};
 use tauri::{
     include_image,
@@ -137,6 +137,7 @@ pub fn run() {
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_store::Builder::new().build())
         .setup(|app| {
             log::info!("WhyFi app starting up");
 

@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { attachConsole, info, debug } from "@tauri-apps/plugin-log";
 import "./App.css";
 import { useWifiMetrics } from "./hooks/useWifiMetrics";
 import { useInterferenceCheck } from "./hooks/useInterferenceCheck";
 import { useSpeedTest } from "./hooks/useSpeedTest";
+import { useSettings } from "./hooks/useSettings";
+import { useAIDiagnosis } from "./hooks/useAIDiagnosis";
 import { Section } from "./components/Section";
 import { MetricRow } from "./components/MetricRow";
 import { Spinner } from "./components/Spinner";
 import { InterferencePanel } from "./components/InterferencePanel";
 import { SpeedTestPanel } from "./components/SpeedTestPanel";
+import { SettingsPanel } from "./components/SettingsPanel";
+import { DiagnosisPanel } from "./components/DiagnosisPanel";
 import {
   getSignalStatus,
   getPingStatus,
@@ -35,6 +39,16 @@ function App() {
     runSpeedTest,
     clearResults: clearSpeedTest,
   } = useSpeedTest();
+  const { settings, saveApiKey, clearApiKey, hasApiKey } = useSettings();
+  const {
+    result: diagnosisResult,
+    loading: diagnosisLoading,
+    error: diagnosisError,
+    diagnose,
+    clearResult: clearDiagnosis,
+  } = useAIDiagnosis();
+
+  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     attachConsole().then(() => {
@@ -53,6 +67,16 @@ function App() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleDiagnose = () => {
+    if (!settings.openaiApiKey) return;
+    diagnose(settings.openaiApiKey, {
+      metrics,
+      history,
+      interferenceAnalysis,
+      speedTestResults,
+    });
+  };
+
   const formatValue = (value: number | null | undefined, decimals = 0): string => {
     if (value === null || value === undefined) return "—";
     return value.toFixed(decimals);
@@ -70,27 +94,66 @@ function App() {
     return wifi.channel;
   };
 
+  const isAnyPanelOpen = showSettings || diagnosisResult || interferenceAnalysis || speedTestResults;
+  const isAnyTaskRunning = interferenceLoading || speedTestLoading || diagnosisLoading;
+
   return (
     <div className="popover-wrapper">
       <main className="container">
         <div className="header">
-          <h1>WhyFi</h1>
-          <p className="tagline">Figure out why your Wi-Fi sucks</p>
+          <div className="header-row">
+            <div className="header-text">
+              <h1>WhyFi</h1>
+              <p className="tagline">Figure out why your Wi-Fi sucks</p>
+            </div>
+            <button
+              className="settings-icon-button"
+              onClick={() => setShowSettings(true)}
+              title="Settings"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {loading && !metrics && <Spinner />}
 
         {error && <div className="error">Error: {error}</div>}
 
-        {interferenceAnalysis && (
+        {showSettings && (
+          <SettingsPanel
+            apiKey={settings.openaiApiKey}
+            onSave={saveApiKey}
+            onClear={clearApiKey}
+            onClose={() => setShowSettings(false)}
+          />
+        )}
+
+        {!showSettings && diagnosisResult && (
+          <DiagnosisPanel result={diagnosisResult} onClose={clearDiagnosis} />
+        )}
+
+        {!showSettings && !diagnosisResult && interferenceAnalysis && (
           <InterferencePanel analysis={interferenceAnalysis} onClose={clearAnalysis} />
         )}
 
-        {speedTestResults && (
+        {!showSettings && !diagnosisResult && !interferenceAnalysis && speedTestResults && (
           <SpeedTestPanel results={speedTestResults} onClose={clearSpeedTest} />
         )}
 
-        {!interferenceAnalysis && !speedTestResults && metrics && (
+        {!isAnyPanelOpen && metrics && (
           <div className="metrics-container">
             <Section title="Connection to your router" subtitle={formatWifiSubtitle(metrics.wifi)}>
               <MetricRow
@@ -205,7 +268,7 @@ function App() {
               <button
                 className={`interference-button ${interferenceLoading ? "interference-button--scanning" : ""}`}
                 onClick={checkInterference}
-                disabled={interferenceLoading || speedTestLoading}
+                disabled={isAnyTaskRunning}
               >
                 {interferenceLoading ? "Scanning..." : "Check Interference"}
               </button>
@@ -215,12 +278,30 @@ function App() {
               <button
                 className={`speedtest-button ${speedTestLoading ? "speedtest-button--running" : ""}`}
                 onClick={runSpeedTest}
-                disabled={speedTestLoading || interferenceLoading}
+                disabled={isAnyTaskRunning}
               >
                 {speedTestLoading ? (speedTestStatus || "Testing...") : "Speed Test"}
               </button>
               {speedTestError && (
                 <div className="speedtest-error">{speedTestError}</div>
+              )}
+            </div>
+
+            <div className="diagnose-button-container">
+              <button
+                className={`diagnose-button ${diagnosisLoading ? "diagnose-button--running" : ""}`}
+                onClick={handleDiagnose}
+                disabled={isAnyTaskRunning || !hasApiKey}
+              >
+                {diagnosisLoading ? "Analyzing..." : "Diagnose with AI"}
+              </button>
+              {!hasApiKey && (
+                <div className="diagnose-hint">
+                  Configure your OpenAI API key in Settings
+                </div>
+              )}
+              {diagnosisError && (
+                <div className="diagnose-error">{diagnosisError}</div>
               )}
             </div>
           </div>
