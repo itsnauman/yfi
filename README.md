@@ -24,7 +24,8 @@ Everything is color-coded: green is good, yellow is meh, red is why-is-this-happ
 
 ```bash
 brew tap itsnauman/whyfi
-brew install --cask whyfi
+brew install whyfi
+ln -sf "$(brew --prefix)/opt/whyfi/whyfi.app" /Applications/
 ```
 
 That's it.
