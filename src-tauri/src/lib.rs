@@ -140,6 +140,7 @@ pub fn run() {
         .setup(|app| {
             log::info!("WhyFi app starting up");
 
+            #[allow(deprecated)]
             unsafe {
                 let app_instance = NSApp();
                 app_instance.setActivationPolicy_(NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory);
@@ -149,6 +150,7 @@ pub fn run() {
             let quit_item = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&quit_item])?;
 
+            #[allow(deprecated)]
             TrayIconBuilder::new()
                 .icon(include_image!("icons/tray-icon.png"))
                 .icon_as_template(true)
