@@ -33,8 +33,6 @@ function buildPrompt(input: DiagnosisInput): string {
   if (metrics) {
     prompt += `
 ### Wi-Fi Connection
-- SSID: ${metrics.wifi.ssid || "Unknown"}
-- Connected: ${metrics.wifi.connected}
 - Frequency Band: ${metrics.wifi.frequency_band || "Unknown"}
 - Channel: ${metrics.wifi.channel || "Unknown"}
 - Link Rate: ${metrics.wifi.link_rate_mbps !== null ? `${metrics.wifi.link_rate_mbps} Mbps` : "Unknown"}
