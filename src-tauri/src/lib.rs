@@ -15,7 +15,7 @@ use tauri_plugin_log::{Target, TargetKind};
 
 const WINDOW_LABEL: &str = "main";
 const WINDOW_WIDTH: f64 = 360.0;
-const WINDOW_HEIGHT: f64 = 620.0;
+const WINDOW_HEIGHT: f64 = 650.0;
 
 #[tauri::command]
 fn hide_window(window: tauri::Window) {
