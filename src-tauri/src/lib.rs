@@ -133,7 +133,6 @@ pub fn run() {
                 .level_for("tracing", log::LevelFilter::Warn)
                 .level_for("tokio", log::LevelFilter::Warn)
                 .level_for("hyper", log::LevelFilter::Warn)
-                .level_for("whyfi_lib", log::LevelFilter::Debug)
                 .build(),
         )
         .plugin(tauri_plugin_opener::init())
