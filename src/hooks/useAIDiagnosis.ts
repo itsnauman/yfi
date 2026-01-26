@@ -104,16 +104,16 @@ Analyze the above data and respond with a JSON object in this exact format:
     }
   ],
   "recommendations": [
-    "Actionable recommendation 1",
-    "Actionable recommendation 2"
+    "Specific actionable recommendation"
   ]
 }
 
 Guidelines:
+- Provide exactly the top 3 most important issues, prioritized by severity and impact
+- Provide exactly 3 highly actionable recommendations, prioritized by impact (most impactful first)
+- Recommendations must be specific actions the user can take immediately (e.g., "Move your router away from the microwave" not "Reduce interference")
 - Analyze the time series data for trends: improving, degrading, stable, or intermittent patterns
 - Look for correlations between metrics (e.g., signal drops coinciding with latency spikes)
-- Be concise but specific
-- Focus on actionable recommendations the user can actually implement
 - Signal strength: -30 to -50 dBm is excellent, -50 to -60 is good, -60 to -70 is fair, below -70 is weak
 - Ping latency: under 20ms is excellent, 20-50ms is good, 50-100ms is acceptable, over 100ms is problematic
 - Any packet loss above 0% is concerning
