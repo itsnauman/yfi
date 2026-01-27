@@ -131,6 +131,8 @@ brew install yfy
 ln -sf $(brew --prefix)/opt/yfy/yfy.app /Applications/yfy.app
 ```
 
+Building from source avoids macOS code signing issues since the app is compiled locally on your machine.
+
 ## Coding Guidelines
 - Don't add any comments to code.
 
