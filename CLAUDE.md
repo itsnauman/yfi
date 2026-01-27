@@ -127,7 +127,8 @@ git push origin main
 Users install via:
 ```bash
 brew tap itsnauman/yfy
-brew install --cask yfy
+brew install yfy
+ln -sf $(brew --prefix)/opt/yfy/yfy.app /Applications/yfy.app
 ```
 
 ## Coding Guidelines

@@ -21,11 +21,19 @@ Everything is color-coded: green is good, yellow is meh, red is why-is-this-happ
 ## Install
 
 ```bash
-brew install itsnauman/yfy/yfy
-sudo ln -sf "$(brew --prefix)/opt/yfy/yfy.app" /Applications/
+brew tap itsnauman/yfy
+brew install yfy
 ```
 
-That's it.
+Then either symlink to Applications:
+```bash
+ln -sf $(brew --prefix)/opt/yfy/yfy.app /Applications/yfy.app
+```
+
+Or open directly:
+```bash
+open $(brew --prefix)/opt/yfy/yfy.app
+```
 
 ## Usage
 
