@@ -4780,24 +4780,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "whyfi"
-version = "0.1.0"
-dependencies = [
- "cocoa",
- "log",
- "objc",
- "once_cell",
- "regex",
- "serde",
- "tauri",
- "tauri-build",
- "tauri-plugin-log",
- "tauri-plugin-opener",
- "tauri-plugin-store",
- "tokio",
-]
-
-[[package]]
 name = "winapi"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5335,6 +5317,24 @@ dependencies = [
  "libc",
  "once_cell",
  "pkg-config",
+]
+
+[[package]]
+name = "yfy"
+version = "0.1.0"
+dependencies = [
+ "cocoa",
+ "log",
+ "objc",
+ "once_cell",
+ "regex",
+ "serde",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-log",
+ "tauri-plugin-opener",
+ "tauri-plugin-store",
+ "tokio",
 ]
 
 [[package]]

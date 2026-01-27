@@ -1,10 +1,8 @@
-# WhyFi
+# Yfy
 
 *Figure out why your Wi-Fi sucks.*
 
 A tiny macOS menu bar app that tells you what's actually going on with your internet connection. No more wondering if it's your router, your ISP, or just the universe conspiring against your video call.
-
-<img src="screenshot.png" width="300" alt="WhyFi Screenshot">
 
 ## What it does
 
@@ -23,15 +21,15 @@ Everything is color-coded: green is good, yellow is meh, red is why-is-this-happ
 ## Install
 
 ```bash
-brew install itsnauman/whyfi/whyfi
-sudo ln -sf "$(brew --prefix)/opt/whyfi/whyfi.app" /Applications/
+brew install itsnauman/yfy/yfy
+sudo ln -sf "$(brew --prefix)/opt/yfy/yfy.app" /Applications/
 ```
 
 That's it.
 
 ## Usage
 
-1. Launch WhyFi
+1. Launch Yfy
 2. Click the icon in your menu bar
 3. Understand your Wi-Fi situation
 4. Press `Esc` to close, or just click away

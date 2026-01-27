@@ -94,7 +94,7 @@ fn create_popup_window(app: &tauri::AppHandle, tray_rect: &Rect) {
         .build();
 
     let window = WebviewWindowBuilder::new(app, WINDOW_LABEL, WebviewUrl::default())
-        .title("whyfi")
+        .title("yfy")
         .inner_size(WINDOW_WIDTH, WINDOW_HEIGHT)
         .position(x / scale_factor, y / scale_factor)
         .resizable(false)
@@ -138,7 +138,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .setup(|app| {
-            log::info!("WhyFi app starting up");
+            log::info!("Yfy app starting up");
 
             #[allow(deprecated)]
             unsafe {
@@ -170,7 +170,7 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            log::info!("WhyFi app setup complete");
+            log::info!("Yfy app setup complete");
             Ok(())
         })
         .on_menu_event(|app, event| {

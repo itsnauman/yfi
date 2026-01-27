@@ -1,6 +1,6 @@
 ## Project Overview
 
-whyfi is a macOS menu bar (tray) application built with Tauri 2, React 19, and TypeScript. It displays a popup window when the tray icon is clicked.
+yfy is a macOS menu bar (tray) application built with Tauri 2, React 19, and TypeScript. It displays a popup window when the tray icon is clicked.
 
 ## Development Commands
 
@@ -35,7 +35,7 @@ pnpm dev
 
 ## Logging
 
-- Logs are located in the directory: `~/Library/Logs/com.naumanahmad.whyfi/`
+- Logs are located in the directory: `~/Library/Logs/com.naumanahmad.yfy/`
 - You can add logging and then read the log file to validate your changes.
 
 **TypeScript:**
@@ -72,21 +72,21 @@ pnpm tauri build
 ```
 
 This creates:
-- `src-tauri/target/release/bundle/macos/whyfi.app`
-- `src-tauri/target/release/bundle/dmg/whyfi_X.Y.Z_aarch64.dmg`
+- `src-tauri/target/release/bundle/macos/yfy.app`
+- `src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg`
 
 ### 3. Get SHA256 Hash
 
 ```bash
-shasum -a 256 src-tauri/target/release/bundle/dmg/whyfi_X.Y.Z_aarch64.dmg
+shasum -a 256 src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg
 ```
 
 ### 4. Create GitHub Release
 
 ```bash
 gh release create vX.Y.Z \
-  src-tauri/target/release/bundle/dmg/whyfi_X.Y.Z_aarch64.dmg \
-  --repo itsnauman/whyfi \
+  src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg \
+  --repo itsnauman/yfy \
   --title "vX.Y.Z" \
   --notes "Release notes here"
 ```
@@ -95,12 +95,12 @@ gh release create vX.Y.Z \
 
 Clone the tap repository:
 ```bash
-gh repo clone itsnauman/homebrew-whyfi /tmp/homebrew-whyfi
+gh repo clone itsnauman/homebrew-yfy /tmp/homebrew-yfy
 ```
 
-Edit `Casks/whyfi.rb` with the new version and SHA256:
+Edit `Casks/yfy.rb` with the new version and SHA256:
 ```ruby
-cask "whyfi" do
+cask "yfy" do
   version "X.Y.Z"
   sha256 "NEW_SHA256_HASH"
   # ... rest unchanged
@@ -109,9 +109,9 @@ end
 
 Commit and push:
 ```bash
-cd /tmp/homebrew-whyfi
+cd /tmp/homebrew-yfy
 git add -A
-git commit -m "Update whyfi to vX.Y.Z"
+git commit -m "Update yfy to vX.Y.Z"
 git push origin main
 ```
 
@@ -119,15 +119,15 @@ git push origin main
 
 | Repository | URL |
 |------------|-----|
-| Main repo | https://github.com/itsnauman/whyfi |
-| Homebrew tap | https://github.com/itsnauman/homebrew-whyfi |
+| Main repo | https://github.com/itsnauman/yfy |
+| Homebrew tap | https://github.com/itsnauman/homebrew-yfy |
 
 ### Installation
 
 Users install via:
 ```bash
-brew tap itsnauman/whyfi
-brew install --cask whyfi
+brew tap itsnauman/yfy
+brew install --cask yfy
 ```
 
 ## Coding Guidelines
