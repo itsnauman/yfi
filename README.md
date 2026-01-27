@@ -69,4 +69,4 @@ MIT. Free as in beer, free as in speech.
 
 ---
 
-*Built with the tireless assistance of [Claude Code](https://claude.ai/download). Thanks for writing most of this, buddy.*
+*100% of this code was written by [Claude Code](https://claude.ai/download) with Opus 4.5.*
