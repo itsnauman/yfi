@@ -65,43 +65,39 @@ Update the version in `src-tauri/tauri.conf.json`:
 "version": "X.Y.Z"
 ```
 
-### 2. Build the App
+### 2. Commit and Tag
 
 ```bash
-pnpm tauri build
+git add -A
+git commit -m "Bump version to X.Y.Z"
+git push origin main
 ```
 
-This creates:
-- `src-tauri/target/release/bundle/macos/yfy.app`
-- `src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg`
-
-### 3. Get SHA256 Hash
-
-```bash
-shasum -a 256 src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg
-```
-
-### 4. Create GitHub Release
+### 3. Create GitHub Release
 
 ```bash
 gh release create vX.Y.Z \
-  src-tauri/target/release/bundle/dmg/yfy_X.Y.Z_aarch64.dmg \
   --repo itsnauman/yfy \
   --title "vX.Y.Z" \
   --notes "Release notes here"
 ```
 
-### 5. Update Homebrew Tap
+### 4. Update Homebrew Tap
 
 Clone the tap repository:
 ```bash
 gh repo clone itsnauman/homebrew-yfy /tmp/homebrew-yfy
 ```
 
-Edit `Casks/yfy.rb` with the new version and SHA256:
+Get the SHA256 of the source tarball:
+```bash
+curl -sL https://github.com/itsnauman/yfy/archive/refs/tags/vX.Y.Z.tar.gz | shasum -a 256
+```
+
+Edit `Formula/yfy.rb` with the new version and SHA256:
 ```ruby
-cask "yfy" do
-  version "X.Y.Z"
+class Yfy < Formula
+  url "https://github.com/itsnauman/yfy/archive/refs/tags/vX.Y.Z.tar.gz"
   sha256 "NEW_SHA256_HASH"
   # ... rest unchanged
 end
