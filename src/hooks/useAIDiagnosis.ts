@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import OpenAI from "openai";
 import { debug, info, error as logError } from "@tauri-apps/plugin-log";
 import { DiagnosisResult } from "../types/diagnosis";
 import { NetworkMetrics, MetricHistory } from "../types/metrics";
@@ -136,17 +135,20 @@ export function useAIDiagnosis(): UseAIDiagnosisResult {
     info("useAIDiagnosis: starting AI diagnosis");
 
     try {
-      const openai = createOpenAI({
+      const openai = new OpenAI({
         apiKey,
+        dangerouslyAllowBrowser: true,
       });
 
       const prompt = buildPrompt(input);
       info(`useAIDiagnosis: prompt:\n${prompt}`);
 
-      const { text } = await generateText({
-        model: openai("gpt-5-mini"),
-        prompt,
+      const completion = await openai.chat.completions.create({
+        model: "gpt-5-mini",
+        messages: [{ role: "user", content: prompt }],
       });
+
+      const text = completion.choices[0]?.message?.content ?? "";
 
       debug(`useAIDiagnosis: received response from OpenAI`);
 
@@ -167,14 +169,26 @@ export function useAIDiagnosis(): UseAIDiagnosisResult {
       const errorMsg = e instanceof Error ? e.message : String(e);
       logError(`useAIDiagnosis: failed - ${errorMsg}`);
 
-      if (errorMsg.includes("401") || errorMsg.includes("Unauthorized") || errorMsg.includes("invalid_api_key")) {
-        setError("Invalid API key. Please check your OpenAI API key in Settings.");
-      } else if (errorMsg.includes("429") || errorMsg.includes("rate_limit")) {
-        setError("Rate limit exceeded. Please wait a moment and try again.");
-      } else if (errorMsg.includes("timeout") || errorMsg.includes("ETIMEDOUT")) {
-        setError("Request timed out. Please try again.");
+      if (e instanceof OpenAI.APIError) {
+        if (e.status === 401) {
+          setError("Invalid API key. Please check your OpenAI API key in Settings.");
+        } else if (e.status === 429) {
+          setError("Rate limit exceeded. Please wait a moment and try again.");
+        } else if (e.status === 408 || e.message.includes("timeout")) {
+          setError("Request timed out. Please try again.");
+        } else if (e.status === 500 || e.status === 502 || e.status === 503) {
+          setError("OpenAI service is temporarily unavailable. Please try again later.");
+        } else {
+          setError(`API error: ${e.message}`);
+        }
+      } else if (e instanceof Error) {
+        if (e.message.includes("timeout") || e.message.includes("ETIMEDOUT")) {
+          setError("Request timed out. Please try again.");
+        } else {
+          setError(e.message);
+        }
       } else {
-        setError(errorMsg);
+        setError(String(e));
       }
     } finally {
       setLoading(false);
