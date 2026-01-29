@@ -103,7 +103,7 @@ function App() {
         <div className="header">
           <div className="header-row">
             <div className="header-text">
-              <h1>Yfy</h1>
+              <h1>Yfi</h1>
               <p className="tagline">Figure out why your Wi-Fi sucks</p>
             </div>
             <button

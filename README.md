@@ -1,4 +1,4 @@
-# Yfy
+# Yfi
 
 *Figure out why your Wi-Fi sucks.*
 
@@ -22,34 +22,34 @@ Everything is color-coded: green is good, yellow is meh, red is why-is-this-happ
 ## Install
 
 ```bash
-brew tap itsnauman/yfy
-brew install yfy
+brew tap itsnauman/yfi
+brew install yfi
 ```
 
 Then either symlink to Applications:
 ```bash
-ln -sf $(brew --prefix)/opt/yfy/yfy.app /Applications/yfy.app
+ln -sf $(brew --prefix)/opt/yfi/yfi.app /Applications/yfi.app
 ```
 
 Or open directly:
 ```bash
-open $(brew --prefix)/opt/yfy/yfy.app
+open $(brew --prefix)/opt/yfi/yfi.app
 ```
 
 ## Usage
 
-1. Launch Yfy
+1. Launch Yfi
 2. Click the icon in your menu bar
 3. Understand your Wi-Fi situation
 4. Press `Esc` to close, or just click away
 
 ## AI Diagnosis
 
-Yfy can analyze your network data and provide personalized recommendations using OpenAI's API.
+Yfi can analyze your network data and provide personalized recommendations using OpenAI's API.
 
 **Setup:**
 1. Get an API key from [platform.openai.com](https://platform.openai.com/api-keys)
-2. Open Yfy and click the settings icon (⚙️)
+2. Open Yfi and click the settings icon (⚙️)
 3. Paste your API key and save
 
 **What you get:**

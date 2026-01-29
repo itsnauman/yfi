@@ -1,6 +1,6 @@
 ## Project Overview
 
-yfy is a macOS menu bar (tray) application built with Tauri 2, React 19, and TypeScript. It displays a popup window when the tray icon is clicked.
+yfi is a macOS menu bar (tray) application built with Tauri 2, React 19, and TypeScript. It displays a popup window when the tray icon is clicked.
 
 ## Development Commands
 
@@ -35,7 +35,7 @@ pnpm dev
 
 ## Logging
 
-- Logs are located in the directory: `~/Library/Logs/com.naumanahmad.yfy/`
+- Logs are located in the directory: `~/Library/Logs/com.naumanahmad.yfi/`
 - You can add logging and then read the log file to validate your changes.
 
 **TypeScript:**
@@ -77,7 +77,7 @@ git push origin main
 
 ```bash
 gh release create vX.Y.Z \
-  --repo itsnauman/yfy \
+  --repo itsnauman/yfi \
   --title "vX.Y.Z" \
   --notes "Release notes here"
 ```
@@ -86,18 +86,18 @@ gh release create vX.Y.Z \
 
 Clone the tap repository:
 ```bash
-gh repo clone itsnauman/homebrew-yfy /tmp/homebrew-yfy
+gh repo clone itsnauman/homebrew-yfi /tmp/homebrew-yfi
 ```
 
 Get the SHA256 of the source tarball:
 ```bash
-curl -sL https://github.com/itsnauman/yfy/archive/refs/tags/vX.Y.Z.tar.gz | shasum -a 256
+curl -sL https://github.com/itsnauman/yfi/archive/refs/tags/vX.Y.Z.tar.gz | shasum -a 256
 ```
 
-Edit `Formula/yfy.rb` with the new version and SHA256:
+Edit `Formula/yfi.rb` with the new version and SHA256:
 ```ruby
-class Yfy < Formula
-  url "https://github.com/itsnauman/yfy/archive/refs/tags/vX.Y.Z.tar.gz"
+class Yfi < Formula
+  url "https://github.com/itsnauman/yfi/archive/refs/tags/vX.Y.Z.tar.gz"
   sha256 "NEW_SHA256_HASH"
   # ... rest unchanged
 end
@@ -105,9 +105,9 @@ end
 
 Commit and push:
 ```bash
-cd /tmp/homebrew-yfy
+cd /tmp/homebrew-yfi
 git add -A
-git commit -m "Update yfy to vX.Y.Z"
+git commit -m "Update yfi to vX.Y.Z"
 git push origin main
 ```
 
@@ -115,16 +115,16 @@ git push origin main
 
 | Repository | URL |
 |------------|-----|
-| Main repo | https://github.com/itsnauman/yfy |
-| Homebrew tap | https://github.com/itsnauman/homebrew-yfy |
+| Main repo | https://github.com/itsnauman/yfi |
+| Homebrew tap | https://github.com/itsnauman/homebrew-yfi |
 
 ### Installation
 
 Users install via:
 ```bash
-brew tap itsnauman/yfy
-brew install yfy
-ln -sf $(brew --prefix)/opt/yfy/yfy.app /Applications/yfy.app
+brew tap itsnauman/yfi
+brew install yfi
+ln -sf $(brew --prefix)/opt/yfi/yfi.app /Applications/yfi.app
 ```
 
 Building from source avoids macOS code signing issues since the app is compiled locally on your machine.
