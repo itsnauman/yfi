@@ -73,8 +73,10 @@ export function DiagnosisPanel({ result, onClose }: DiagnosisPanelProps) {
             <div className="diagnosis-issues-list">
               {result.issues.map((issue, idx) => (
                 <div key={idx} className={`diagnosis-issue ${getSeverityClass(issue.severity)}`}>
-                  <span className="diagnosis-issue-severity">{issue.severity}</span>
-                  <span className="diagnosis-issue-description">{issue.description}</span>
+                  <div className="diagnosis-issue-header">
+                    <span className="diagnosis-issue-severity">{issue.severity}</span>
+                  </div>
+                  <p className="diagnosis-issue-description">{issue.description}</p>
                 </div>
               ))}
             </div>
