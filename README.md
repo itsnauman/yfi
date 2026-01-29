@@ -4,8 +4,6 @@
 
 A tiny macOS menu bar app that tells you what's actually going on with your internet connection. No more wondering if it's your router, your ISP, or just the universe conspiring against your video call.
 
-<img src="screenshot.jpg" alt="Yfy screenshot" width="200">
-
 ## What it does
 
 Click the menu bar icon and instantly see:
