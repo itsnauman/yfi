@@ -8,7 +8,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  letter-spacing: 0;
 
   --popup-bg: transparent;
   --popup-radius: 10px;
@@ -263,7 +262,7 @@ html, body {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -277,10 +276,10 @@ html, body {
 
 @keyframes shimmer {
   0% {
-    left: -100%;
+    transform: translateX(-100%);
   }
   100% {
-    left: 100%;
+    transform: translateX(200%);
   }
 }
 
@@ -530,7 +529,7 @@ html, body {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -725,7 +724,7 @@ html, body {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
@@ -1030,7 +1029,6 @@ html, body {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .diagnosis-issue--high .diagnosis-issue-severity {
@@ -1066,6 +1064,34 @@ html, body {
 
 .diagnosis-recommendations-list li:last-child {
   margin-bottom: 0;
+}
+
+.header h1,
+.interference-header h2,
+.speedtest-header h2,
+.settings-header h2,
+.diagnosis-header h2,
+.section-title {
+  text-wrap: balance;
+}
+
+.tagline,
+.settings-description,
+.diagnosis-summary-text,
+.diagnosis-issue-description {
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+
+  .interference-button--scanning::before,
+  .speedtest-button--running::before,
+  .diagnose-button--running::before {
+    animation: none;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

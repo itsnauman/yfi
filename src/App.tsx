@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { attachConsole, info, debug } from "@tauri-apps/plugin-log";
 import "./App.css";
+import { cn } from "./utils/cn";
 import { useWifiMetrics } from "./hooks/useWifiMetrics";
 import { useInterferenceCheck } from "./hooks/useInterferenceCheck";
 import { useSpeedTest } from "./hooks/useSpeedTest";
@@ -110,6 +111,7 @@ function App() {
               className="settings-icon-button"
               onClick={() => setShowSettings(true)}
               title="Settings"
+              aria-label="Settings"
             >
               <svg
                 width="18"
@@ -266,7 +268,7 @@ function App() {
 
             <div className="interference-button-container">
               <button
-                className={`interference-button ${interferenceLoading ? "interference-button--scanning" : ""}`}
+                className={cn("interference-button", interferenceLoading && "interference-button--scanning")}
                 onClick={checkInterference}
                 disabled={isAnyTaskRunning}
               >
@@ -276,7 +278,7 @@ function App() {
 
             <div className="speedtest-button-container">
               <button
-                className={`speedtest-button ${speedTestLoading ? "speedtest-button--running" : ""}`}
+                className={cn("speedtest-button", speedTestLoading && "speedtest-button--running")}
                 onClick={runSpeedTest}
                 disabled={isAnyTaskRunning}
               >
@@ -289,7 +291,7 @@ function App() {
 
             <div className="diagnose-button-container">
               <button
-                className={`diagnose-button ${diagnosisLoading ? "diagnose-button--running" : ""}`}
+                className={cn("diagnose-button", diagnosisLoading && "diagnose-button--running")}
                 onClick={handleDiagnose}
                 disabled={isAnyTaskRunning || !hasApiKey}
               >
